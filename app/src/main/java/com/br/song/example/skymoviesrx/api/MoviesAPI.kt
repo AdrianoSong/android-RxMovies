@@ -1,7 +1,6 @@
 package com.br.song.example.skymoviesrx.api
 
 import android.util.Log
-import com.br.song.example.skymoviesrx.adapter.MovieAdapter
 import com.br.song.example.skymoviesrx.model.Movie
 import com.br.song.example.skymoviesrx.ui.main.MainViewModel
 import io.reactivex.Observable
@@ -46,25 +45,13 @@ class SkyMovies {
             .build()
     }
 
-    fun getMovies(adapter: MovieAdapter) =
-        service?.let {
-            it.moviesList()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe (
-                { movieList -> adapter.update(movieList.toMutableList()) },
-                { error -> Log.e("MoviessApi", "onError: ${error.stackTrace}") },
-                {Log.e("MoviessApi", "OnComplete()")}
-            )
-        }
-
     fun getMoviesToLiveData(viewModel: MainViewModel) =
         service?.let {
             it.moviesList()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe (
-                    { movieList -> viewModel.movies.value = movieList },
+                    { movieList -> viewModel.setMovies(movieList) },
                     { error -> Log.e("MoviessApi", "onError: ${error.stackTrace}") },
                     {Log.e("MoviessApi", "OnComplete()")}
                 )

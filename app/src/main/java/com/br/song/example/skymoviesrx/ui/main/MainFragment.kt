@@ -15,10 +15,6 @@ import kotlinx.android.synthetic.main.main_fragment.*
 
 class MainFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = MainFragment()
-    }
-
     private lateinit var viewModel: MainViewModel
     private var movies = mutableListOf<Movie>()
     private var adapter: MovieAdapter? = null
@@ -35,34 +31,28 @@ class MainFragment : Fragment() {
 
         setupViewModel()
         setupRecyclerView()
-
-//        fetchMovies() //without livedata
     }
 
     private fun setupViewModel() {
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        viewModel = activity?.run {
+            ViewModelProviders.of(this).get(MainViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
 
         //using liveData to fetch all data from movies
         viewModel.getLiveDataMovies().observe(this, Observer {
             adapter?.update(it.toMutableList())
         })
-
-        viewModel.fetchLiveDateMovies()
     }
 
     private fun setupRecyclerView() {
         val context = context?.let { it } ?: return
+
+        movies.add(viewModel.getEmptyItemExample())
 
         adapter = MovieAdapter(movies, context)
 
         recyclerviewMovies.setHasFixedSize(true)
         recyclerviewMovies.layoutManager = GridLayoutManager(context, 2)
         recyclerviewMovies.adapter = adapter
-    }
-
-    private fun fetchMovies() {
-        val adapter = adapter?.let { it } ?: return
-
-        viewModel.callAllMovies(adapter)
     }
 }

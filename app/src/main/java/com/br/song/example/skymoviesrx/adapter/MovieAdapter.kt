@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.br.song.example.skymoviesrx.R
 import com.bumptech.glide.Glide
@@ -14,7 +16,8 @@ import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.movie_item.view.*
 
 class MovieAdapter(
-    private val myDataSet: MutableList<Movie>, private val context: Context) :
+    private val myDataSet: MutableList<Movie>,
+    private val context: Context) :
     RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -39,6 +42,18 @@ class MovieAdapter(
             .load(imageUrl)
             .apply(RequestOptions().override(100, 100))
             .into(holder.imgMovieCover)
+
+        holder.txtMovieName.setOnClickListener {
+            val bundle = bundleOf("index" to position)
+
+            it.findNavController().navigate(R.id.toMovieDetails, bundle)
+        }
+
+        holder.imgMovieCover.setOnClickListener {
+            val bundle = bundleOf("index" to position)
+
+            it.findNavController().navigate(R.id.toMovieDetails, bundle)
+        }
     }
 
     fun update(newData: MutableList<Movie>) {
