@@ -30,13 +30,21 @@ class MovieDetailsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        movieIndex = arguments?.getInt("index")
+        defineArgumentsFromNavigation()
 
+        setupViewModel()
+
+        setupAllViewData()
+    }
+
+    private fun defineArgumentsFromNavigation() {
+        movieIndex = arguments?.getInt("index")
+    }
+
+    private fun setupViewModel() {
         viewModel = activity?.run {
             ViewModelProviders.of(this).get(MainViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
-
-        setupAllViewData()
     }
 
     private fun setupAllViewData() {
